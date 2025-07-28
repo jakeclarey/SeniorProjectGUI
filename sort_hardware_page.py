@@ -243,7 +243,9 @@ class SortHardwarePage(tk.Frame):
                         text=f"Sorted: {self.class_names[self.current_part_class]}"
                     )
                     self.session_credits += 1
-                    # self.increment_stock(self.class_name_mapping[self.current_part_class], 1)
+                    print(f"Incrementing Stock: {self.class_name_mapping[self.current_part_class]}")
+                    self.increment_stock(self.class_name_mapping[self.current_part_class], 1)
+                    print("Stock Incremented")
                     self.increment_user_credits()
                     self.update_ui_credits()
 
@@ -328,9 +330,11 @@ class SortHardwarePage(tk.Frame):
         print(f"Updated inventory dict: {self.inventory}")
 
     def update_inventory(self, inventory):
+        print("Updating Inventory")
         try:
             with open("Inventory.txt", "r") as file:
                 for key, pair in inventory.items():
+                    print(f"Writing to inventory file: {key}:{pair}")
                     file.write(f"{key}:{pair}\n")
         except FileNotFoundError:
             print("[ERROR]: Inventory.txt not found after sorting process.")
@@ -343,7 +347,7 @@ class SortHardwarePage(tk.Frame):
         if self.ser:
             try:
                 self.send_command("motors_off\n")
-                # self.update_inventory(self.inventory)
+                self.update_inventory(self.inventory)
                 self.send_command("sorting_done\n")
             except:
                 pass
