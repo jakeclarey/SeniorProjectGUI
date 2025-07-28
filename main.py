@@ -36,6 +36,8 @@ class App(tk.Tk):
 
         self.serial_port = None
         self.serial_port_init("/dev/ttyACM0", baudrate=38400, timeout=None)
+        self.ser = self.get_serial_port()
+        self.ser.flush()
 
         # Default previous page to the IdlePage
         self.previous_page = IdlePage
@@ -72,12 +74,10 @@ class App(tk.Tk):
         if self.serial_port and self.serial_port.is_open:
             print("Closing previous serial port...")
             self.serial_port.close()
-
         try:
             self.serial_port = serial.Serial(
                 port=port, baudrate=baudrate, timeout=timeout
             )
-            self.ser.flush()
             print(f"Serial port {port} opened successfully.")
         except serial.SerialException as e:
             print(f"Failed to open serial port: {e}")
