@@ -7,12 +7,14 @@ yellow_led = LED(23)
 
 
 def update_inventory_leds(inventory_file="Inventory.txt"):
+    print("Updating inventory LEDs")
     red_led.off()
     yellow_led.off()
 
     try:
         with open(inventory_file, "r") as f:
             for line in f:
+                print(line)
                 parts = line.strip().rsplit(": ", 1)
                 if len(parts) == 2:
                     _, qty = parts
