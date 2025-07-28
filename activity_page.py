@@ -79,7 +79,6 @@ class ActivityPage(tk.Frame):
         self.set_user_info(
             self.controller.current_user_id, self.controller.current_user_credits
         )
-        self.ser.flush()
         super().tkraise(aboveThis)
 
     def send_command(self, command):

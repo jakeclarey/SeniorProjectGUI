@@ -96,7 +96,7 @@ class PreSortPage(tk.Frame):
         self.status_label.config(text="")
         self.ser = self.controller.get_serial_port()
         self.ser.flush()
-        self.send_command("sort\n")
+        self.send_command_threaded("sort\n")
         super().tkraise(aboveThis)
 
     def sort_early_exit_command(self):
@@ -131,3 +131,27 @@ class PreSortPage(tk.Frame):
             elif response == "NACK\n":
                 print("STM is in sort state, or is in an unexpected state.")
                 break
+
+    def send_command_threaded(self, command, callback=None):
+        threading.Thread(
+            target=self.send_command_worker, args=(command, callback), daemon=True
+        ).start()
+
+    def send_command_worker(self, command, callback):
+        try:
+            print(f"[Thread] Sending {command.strip()}")
+            self.ser.write(command.encode())
+            while True:
+                response = self.ser.readline().decode()
+                print(f"[Thread] Got response: {response.strip()}")
+                if response == "ACK\n":
+                    break
+                else:
+                    print(
+                        "[Thread] STM is not in the sort state, or is in an unexpected state"
+                    )
+                    break
+            if callback:
+                self.after(100, callback)
+        except Exception as e:
+            print(f"[Thread] Error sending command: {e}")
