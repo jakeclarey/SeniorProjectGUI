@@ -109,11 +109,14 @@ class SortHardwarePage(tk.Frame):
             target=self.run_sorting_process, daemon=True
         )
         self.sorting_thread.start()
-        while self.running:
-            continue
+        self.check_sorting_finished()
 
-        self.status_label.config(text=f"You earned {self.session_credits}!")
-        self.after(3000, lambda: self.controller.show_frame("ActivityPage"))
+    def check_sorting_finished(self):
+        if not self.running:
+            self.status_label.config(text=f"You earned {self.session_credits} credits!")
+            self.after(3000, lambda: self.controller.show_frame("ActivityPage"))
+        else:
+            self.after(500, self.check_sorting_finished)  # Keep checking every 500ms
 
     def run_sorting_process(self):
         try:
@@ -151,7 +154,6 @@ class SortHardwarePage(tk.Frame):
                 # If no parts detected for x seconds, exit sort flow
                 if (time.time() - self.last_detection_time) > timeout_interval:
                     self.status_label.config(text="Timeout: No parts detected")
-                    time.sleep(3)  # Ensures timeout message is shown for at least 3 sec
                     break
 
                 self.status_label.config(
@@ -249,6 +251,7 @@ class SortHardwarePage(tk.Frame):
                     self.send_command(command_string)
                 time.sleep(1)
 
+            time.sleep(3)  # Ensures timeout message is shown for at least 3 sec
             self.cleanup()
             self.running = False
 
