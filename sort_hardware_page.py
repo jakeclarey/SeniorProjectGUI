@@ -103,6 +103,7 @@ class SortHardwarePage(tk.Frame):
             self.controller.current_user_id, self.controller.current_user_credits
         )
         self.inventory = self.load_inventory()
+        print(self.inventory)
 
         super().tkraise(aboveThis)
 
@@ -324,12 +325,9 @@ class SortHardwarePage(tk.Frame):
     def increment_stock(self, part, stock_increment):
         print(f"Inventory dict: {self.inventory}")
         if part in self.inventory:
-            print(f"{part} Old Qty: {self.inventory[part]}")
             self.inventory[part] += stock_increment
         else:
             self.inventory[part] = 0
-
-        print(f"{part} New Qty: {self.inventory[part]}")
         print(f"Updated inventory dict: {self.inventory}")
 
     def update_inventory(self, inventory):
