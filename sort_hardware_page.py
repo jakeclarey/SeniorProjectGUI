@@ -134,7 +134,7 @@ class SortHardwarePage(tk.Frame):
             # self.send_command("sort\n")
 
             # Start sort command
-            self.send_command("start_sort\n")
+            self.send_command("sort_start\n")
 
             # Send motors_on
             self.send_command("motors_on\n")
