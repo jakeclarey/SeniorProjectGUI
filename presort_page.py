@@ -102,7 +102,8 @@ class PreSortPage(tk.Frame):
     def sort_early_exit_command(self):
         print("Sending sort_early_exit")
         self.status_label.config(text="Exiting sort state...")
-        threading.Thread(target=self.send_exit_and_return, daemon=True).start()
+        self.send_command_threaded("sort_early_exit\n", lambda: self.controller.show_frame("ActivityPage"))
+        # threading.Thread(target=self.send_exit_and_return, daemon=True).start()
 
     def send_exit_and_return(self):
         try:
@@ -119,18 +120,6 @@ class PreSortPage(tk.Frame):
         except Exception as e:
             print(f"Error during sort_early_exit: {e}")
             self.after(100, lambda: self.status_label.config(text="Serial error"))
-
-    def send_command(self, command):
-        print(f"Sending {command}")
-        self.ser.write(command.encode())
-        while True:
-            response = self.ser.readline().decode()
-            print(response)
-            if response == "ACK\n":
-                break
-            elif response == "NACK\n":
-                print("STM is in sort state, or is in an unexpected state.")
-                break
 
     def send_command_threaded(self, command, callback=None):
         threading.Thread(
