@@ -243,9 +243,7 @@ class SortHardwarePage(tk.Frame):
                         text=f"Sorted: {self.class_names[self.current_part_class]}"
                     )
                     self.session_credits += 1
-                    print(f"Incrementing Stock: {self.class_name_mapping[self.current_part_class]}")
                     self.increment_stock(self.class_name_mapping[self.current_part_class], 1)
-                    print("Stock Incremented")
                     self.increment_user_credits()
                     self.update_ui_credits()
 
@@ -333,6 +331,7 @@ class SortHardwarePage(tk.Frame):
         print("Updating Inventory")
         try:
             with open("Inventory.txt", "w") as file:
+                print("Inventory.txt opened in write mode")
                 for key, pair in inventory.items():
                     print(f"Writing to inventory file: {key}:{pair}")
                     file.write(f"{key}:{pair}\n")
