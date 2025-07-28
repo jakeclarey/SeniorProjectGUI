@@ -243,7 +243,7 @@ class SortHardwarePage(tk.Frame):
                         text=f"Sorted: {self.class_names[self.current_part_class]}"
                     )
                     self.session_credits += 1
-                    # self.modify_stock(, 1)
+                    self.increment_stock(self.class_name_mapping[self.current_part_class], 1)
                     self.increment_user_credits()
                     self.update_ui_credits()
 
@@ -313,19 +313,28 @@ class SortHardwarePage(tk.Frame):
                             category = parts[0].strip()
                             name = parts[1].strip()
                             quantity = int(parts[2].strip())
-                            inventory[f"{category} {name}"] = quantity
+                            inventory[f"{category}:{name}"] = quantity
             print(f"Loading inventory in sorting page: {inventory}")
         except FileNotFoundError:
             inventory = {"No Data": 0}
         return inventory
 
-    # def increment_stock(self, part, stock_increment):
-    #     print(f"Inventory dict: {self.inventory}")
-    #     if part in self.inventory:
-    #         self.inventory[part] += stock_increment
-    #     else:
-    #         self.inventory[part] = 0
-    #     print(f"Updated inventory dict: {self.inventory}")
+    def increment_stock(self, part, stock_increment):
+        print(f"Inventory dict: {self.inventory}")
+        if part in self.inventory.items():
+            self.inventory[part] += stock_increment
+        else:
+            self.inventory[part] = 0
+        print(f"Updated inventory dict: {self.inventory}")
+
+    def update_inventory(self, inventory):
+        try:
+            with open("Inventory.txt", "r") as file:
+                for key, pair in inventory.items():
+                    file.write(f"{key}:{pair}\n")
+        except FileNotFoundError:
+            print("[ERROR]: Inventory.txt not found after sorting process.")
+
 
     def cleanup(self):
         self.running = False
@@ -334,6 +343,7 @@ class SortHardwarePage(tk.Frame):
         if self.ser:
             try:
                 self.send_command("motors_off\n")
+                self.update_inventory(self.inventory)
                 self.send_command("sorting_done\n")
             except:
                 pass
