@@ -83,6 +83,8 @@ class ActivityPage(tk.Frame):
         self.after(200, self.init_serial_and_send_command("sort_early_exit\n"))
         super().tkraise(aboveThis)
 
+        self.ser.close()
+
     def init_serial_and_send_command(self, command):
         self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
         self.ser.flush()
@@ -96,4 +98,3 @@ class ActivityPage(tk.Frame):
             else:
                 print("STM is not in the sort state, or is an unexpected state")
                 break
-        self.ser.close()
