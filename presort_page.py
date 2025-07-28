@@ -94,7 +94,7 @@ class PreSortPage(tk.Frame):
 
     def tkraise(self, aboveThis=None):
         self.status_label.config(text="")
-        self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
+        self.ser = self.controller.get_serial_port()
         self.ser.flush()
         self.send_command("sort\n")
         super().tkraise(aboveThis)

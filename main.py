@@ -12,6 +12,7 @@ from dispense_order_page import DispenseOrderPage
 
 from PIL import Image, ImageTk
 
+import serial
 from led_utils import update_inventory_leds
 
 
@@ -31,6 +32,10 @@ class App(tk.Tk):
 
         self.current_user_id = None
         self.current_user_credits = None
+
+        self.serial_port = None
+        self.serial_port_init("/dev/ttyACM0", baudrate=38400, timeout=None)
+
         self.frames = {}
 
         for PageClass in (
@@ -57,6 +62,24 @@ class App(tk.Tk):
         frame.tkraise()
 
         update_inventory_leds()
+
+    def serial_port_init(self, port="/dev/ttyACM0", baudrate=38400, timeout=None):
+        if self.serial_port and self.serial_port.is_open:
+            print("Closing previous serial port...")
+            self.serial_port.close()
+
+        try:
+            self.serial_port = serial.Serial(
+                port=port, baudrate=baudrate, timeout=timeout
+            )
+            print(f"Serial port {port} opened successfully.")
+        except serial.SerialException as e:
+            print(f"Failed to open serial port: {e}")
+            self.serial_port = None
+
+    # Used in other pages to get App-scoped serial port
+    def get_serial_port(self):
+        return self.serial_port
 
 
 class PageOne(tk.Frame):

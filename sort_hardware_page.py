@@ -46,7 +46,7 @@ class SortHardwarePage(tk.Frame):
         self.running = False
         self.last_detection_time = None
         self.sorting_thread = None
-        self.ser = None
+        self.ser = self.controller.get_serial_port()
         self.cap = None
         self.model = None
         self.current_part_class = None
@@ -138,7 +138,6 @@ class SortHardwarePage(tk.Frame):
             # Waiting a short moment to ensure serial port is closed from last use
             time.sleep(1)
             self.status_label.config(text="Connecting to motor controller...")
-            self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
             self.ser.flush()
 
             # Start sort command
@@ -313,4 +312,3 @@ class SortHardwarePage(tk.Frame):
                 self.send_command("sorting_done\n")
             except:
                 pass
-            self.ser.close()

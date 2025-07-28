@@ -2,14 +2,12 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import serial
-import threading
-import time
-
 
 class ActivityPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, width=1024, height=600, bg="#0032A0")
         self.controller = controller
+        self.ser = self.controller.get_serial_port()
 
         # User info (top-right)
         self.user_id_label = tk.Label(
@@ -81,26 +79,18 @@ class ActivityPage(tk.Frame):
         self.set_user_info(
             self.controller.current_user_id, self.controller.current_user_credits
         )
-        self.after(200, lambda: self.start_send_command_threaded("sort_early_exit\n"))
+        self.ser.flush()
+        self.after(200, self.send_command("sort_early_exit\n"))
         super().tkraise(aboveThis)
 
-    def start_send_command_threaded(self, command):
-        self.uart_thread = threading.Thread(
-            target=lambda: self.init_serial_and_send_command(command), daemon=True
-        )
-        self.uart_thread.start()
-
-    def init_serial_and_send_command(self, command):
-        self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
-        self.ser.flush()
-        print(f"Sending {command}")
-        self.ser.write(command.encode())
-        while True:
-            response = self.ser.readline().decode()
-            print(response)
-            if response == "ACK\n":
-                break
-            else:
-                print("STM is not in the sort state, or is an unexpected state")
-                break
-        self.ser.close()
+    def send_command(self, command):
+            print(f"Sending {command}")
+            self.ser.write(command.encode())
+            while True:
+                response = self.ser.readline().decode()
+                print(response)
+                if response == "ACK\n":
+                    break
+                else:
+                    print("STM is not in the sort state, or is an unexpected state")
+                    break
