@@ -19,11 +19,15 @@ def update_inventory_leds(inventory_file="Inventory.txt"):
                     _, qty = parts
                     qty = int(qty)
                     if qty < 40:
+                        print(line)
                         red_led.on()
                         print(f"Red LED is {'on' if red_led.is_active else 'off'}")
+                        print("Turn on red?")
                         return
                     elif qty < 100:
+                        print(line)
                         yellow_led.on()
+                        print("Turn on yellow?")
                         print(
                             f"Yellow LED is {'on' if yellow_led.is_active else 'off'}"
                         )
