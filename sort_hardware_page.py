@@ -224,7 +224,7 @@ class SortHardwarePage(tk.Frame):
                     # Calculate steps to drop part
                     x1, y1, x2, y2 = results[0].boxes.xyxy[closest_idx]
                     center_x = int((x2 + x1) / 2)
-                    self.ser.send_command(str(center_x).encode)
+                    self.send_command(str(center_x).encode)
                     length_x = int(x2 - x1)
                     alpha = 10  # pixels-to-steps ratio (85.5 mils 1.5 inches unaccounted for in frame)
                     # 85.5 mils of travel per 400 steps
