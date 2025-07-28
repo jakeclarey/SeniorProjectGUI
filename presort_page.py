@@ -18,7 +18,7 @@ class PreSortPage(tk.Frame):
             font=("Arial", 14),
             width=18,
             height=2,
-            command=self.sort_early_exit,
+            command=self.sort_early_exit_command,
         )
         button.place(x=10, y=10)  # Top-left position
 
