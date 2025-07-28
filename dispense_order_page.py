@@ -1,7 +1,6 @@
 # dispense_page.py
 import tkinter as tk
 from tkinter import ttk, messagebox
-from dispensing_page import DispenseOrderPage
 from led_utils import update_inventory_leds
 
 
@@ -204,7 +203,7 @@ class DispenseOrderPage(tk.Frame):
                     f.write(f"{hw}: {qty}\n")
 
             self.update_keycard_file()
-            DISPENSE_LOADING_SCREEN()
+            # DISPENSE_LOADING_SCREEN()
             self.shopping_list.clear()
             self.hardware_names.clear()
 
