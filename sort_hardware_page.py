@@ -244,7 +244,7 @@ class SortHardwarePage(tk.Frame):
                     )
                     self.session_credits += 1
                     print("Attempting to increment stock")
-                    self.inventory[self.class_name_mapping[self.current_part_class]] += 1
+                    self.inventory[self.class_name_mapping[self.class_names[self.current_part_class]]] += 1
                     self.increment_user_credits()
                     self.update_ui_credits()
 
