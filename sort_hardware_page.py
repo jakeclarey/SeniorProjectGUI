@@ -82,15 +82,15 @@ class SortHardwarePage(tk.Frame):
 
         # Mapping YOLO class names to inventory names
         self.class_name_mapping = {
-            "M2x0.4-10mm": "Screw: M2 x 10",
-            "M2x0.4-LSNUT": "Nut: M2",
-            "M3x0.5-16mm": "Screw: M3 x 16",
-            "M3x0.5-30mm": "Screw: M3 x 30",
-            "M3x0.5-50mm": "Screw: M3 x 50",
-            "M3x0.5-8mm": "Screw: M3 x 8",
-            "M3x0.5-FW": "Washer: M3",
-            "M3x0.5-LSNUT": "Nut: M3",
-            "M3x0.5-MSLNUT": "Locknut: M3",
+            "M2x0.4-10mm": "Screw:M2 x 10",
+            "M2x0.4-LSNUT": "Nut:M2",
+            "M3x0.5-16mm": "Screw:M3 x 16",
+            "M3x0.5-30mm": "Screw:M3 x 30",
+            "M3x0.5-50mm": "Screw:M3 x 50",
+            "M3x0.5-8mm": "Screw:M3 x 8",
+            "M3x0.5-FW": "Washer:M3",
+            "M3x0.5-LSNUT": "Nut:M3",
+            "M3x0.5-MSLNUT": "Locknut:M3",
         }
 
     def set_user_info(self, user_id, credits):
@@ -244,7 +244,7 @@ class SortHardwarePage(tk.Frame):
                     )
                     self.session_credits += 1
                     print("Attempting to increment stock")
-                    self.increment_stock(self.class_name_mapping[self.current_part_class], 1)
+                    self.inventory[self.class_name_mapping[self.current_part_class]] += 1
                     self.increment_user_credits()
                     self.update_ui_credits()
 
