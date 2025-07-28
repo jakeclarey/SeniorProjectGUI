@@ -147,7 +147,7 @@ class SortHardwarePage(tk.Frame):
 
             self.status_label.config(text="Sorting in progress...")
             self.last_detection_time = time.time()
-            timeout_interval = 20
+            timeout_interval = 10
 
             while self.running:
 
@@ -253,7 +253,6 @@ class SortHardwarePage(tk.Frame):
 
             time.sleep(3)  # Ensures timeout message is shown for at least 3 sec
             self.cleanup()
-            self.running = False
 
         except Exception as e:
             self.status_label.config(text=f"Error: {e}")

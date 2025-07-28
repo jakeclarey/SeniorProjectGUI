@@ -80,7 +80,7 @@ class ActivityPage(tk.Frame):
         )
         self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
         self.ser.flush()
-        self.send_command("sort_early_exit\n")
+        self.after(100, self.send_command("sort_early_exit\n"))
         super().tkraise(aboveThis)
 
     def send_command(self, command):
