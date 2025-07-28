@@ -10,6 +10,7 @@ class PreSortPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, width=1024, height=600, bg="#0032A0")
         self.controller = controller
+        self.ser = self.controller.get_serial_port()
 
         # Button in top-left corner
         button = tk.Button(
@@ -94,8 +95,6 @@ class PreSortPage(tk.Frame):
 
     def tkraise(self, aboveThis=None):
         self.status_label.config(text="")
-        self.ser = self.controller.get_serial_port()
-        self.ser.flush()
         self.send_command_threaded("sort\n")
         super().tkraise(aboveThis)
 
@@ -103,7 +102,6 @@ class PreSortPage(tk.Frame):
         print("Sending sort_early_exit")
         self.status_label.config(text="Exiting sort state...")
         self.send_command_threaded("sort_early_exit\n", lambda: self.controller.show_frame("ActivityPage"))
-        # threading.Thread(target=self.send_exit_and_return, daemon=True).start()
 
     def send_exit_and_return(self):
         try:

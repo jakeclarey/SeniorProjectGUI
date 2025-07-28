@@ -36,6 +36,9 @@ class App(tk.Tk):
         self.serial_port = None
         self.serial_port_init("/dev/ttyACM0", baudrate=38400, timeout=None)
 
+        # Default previous page to the IdlePage
+        self.previous_page = IdlePage
+
         self.frames = {}
 
         for PageClass in (

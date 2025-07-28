@@ -29,6 +29,7 @@ class DispenseOrderPage(tk.Frame):
             width=20,
             height=2,
             bg="white",
+            command=lambda: controller.show_frame("HardwareStockPage")
         ).place(x=170, y=10)
 
         # User info
@@ -98,7 +99,7 @@ class DispenseOrderPage(tk.Frame):
         # Quantity slider
         self.quantity = tk.IntVar(value=5)
         self.slider = ttk.Scale(
-            self, from_=1, to=10, orient="horizontal", variable=self.quantity
+            self, from_=1, to=10, orient="horizontal", sliderlength=50, variable=self.quantity,
         )
         self.slider.place(relx=0.5, y=340, width=700, anchor="center")
 

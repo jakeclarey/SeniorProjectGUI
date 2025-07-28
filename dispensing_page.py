@@ -2,82 +2,62 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import serial
-import time
-import keycard
+import threading
 
 
 class DispensingPage(tk.Frame):
-    def __init__(self):
-        super().__init__(parent, width=1024, height=600, bg="#0032A0")
-        self.title("Dispensing...")
-        self.configure(bg="#0032A0")
-        self.geometry("1024x600")
-        self.resizable(False, False)
-        self.finished = False
+    def __init__(self, parent, controller):
+        def __init__(self, parent, controller):
+            super().__init__(parent, width=1024, height=600, bg="#0032A0")
+            self.controller = controller
 
-        # Top user info
-        self.user_id = keycard.current_user_id
-        self.credits = keycard.get_user_credits(self.user_id)
-
-        user_id_decimal = (
-            int(self.user_id) if isinstance(self.user_id, str) else self.user_id
-        )
-
-        user_info_frame = tk.Frame(self, bg="#598baf")
-        user_info_frame.pack(fill="x")
-
-        tk.Label(
-            user_info_frame,
-            text=f"User ID: {user_id_decimal}",
-            font=("Helvetica", 14),
-            bg="#598baf",
-            fg="black",
-        ).pack(side="left", padx=20, pady=5)
-
-        self.credits_label = tk.Label(
-            user_info_frame,
-            text=f"Credits: {self.credits}",
-            font=("Helvetica", 14),
-            bg="#598baf",
-            fg="black",
-        )
-        self.credits_label.pack(side="right", padx=20, pady=5)
-
-        # Center canvas area
-        canvas = tk.Canvas(
-            self, width=1024, height=540, bg="#0032A0", highlightthickness=0
-        )
-        canvas.pack()
-
-        # Draw white box with thick black border
-        canvas.create_rectangle(90, 90, 934, 585, outline="black", width=25)
-        canvas.create_rectangle(100, 100, 924, 575, fill="white", outline="white")
-
-        # Load and display GVSU logo
-        try:
-            logo = Image.open("GVSU_LOGO.png").resize((200, 100))
-            self.logo_img = ImageTk.PhotoImage(logo)
-            canvas.create_image(512, 450, image=self.logo_img)
-        except FileNotFoundError:
-            canvas.create_text(
-                512, 450, text="LOGO NOT FOUND", font=("Arial", 16), fill="black"
+            # White box with thick black border
+            box_frame = tk.Frame(
+                self, bg="white", highlightbackground="black", highlightthickness=25
             )
+            box_frame.place(relx=0.5, rely=0.5, anchor="center", width=600, height=400)
 
-        # Message
-        message = "Please Wait While System Processes Order"
-        canvas.create_text(
-            512, 200, text=message, font=("Montserrat", 20), fill="black"
+            # Load and display image inside the box
+            logo_path = "GVSU_LOGO.png"  # Ensure this path is correct
+            try:
+                logo = Image.open(logo_path)
+                self.photo = ImageTk.PhotoImage(logo)
+                logo_label = tk.Label(box_frame, image=self.photo, bg="white")
+                logo_label.place(relx=0.5, rely=0.3, anchor="center")
+            except FileNotFoundError:
+                tk.Label(
+                    box_frame, text="Image Not Found", font=("Arial", 18), bg="white"
+                ).place(relx=0.5, rely=0.3, anchor="center")
+
+            # Text below the image inside the box
+            project_text = tk.Label(
+                box_frame,
+                text="Dispensing your order...",
+                font=("Arial", 18),
+                bg="white",
+            )
+            project_text.place(relx=0.5, rely=0.7, anchor="center")
+
+    def set_user_info(self, user_id, credits):
+        self.user_id_label.config(text=f"ID: {user_id}")
+        self.credits_label.config(text=f"Credits: {credits}")
+
+    def tkraise(self, aboveThis=None):
+        self.session_credits = 0
+        self.set_user_info(
+            self.controller.current_user_id, self.controller.current_user_credits
         )
+        super().tkraise(aboveThis)
+        self.dispensing_thread = threading.Thread(
+            target=self.run_dispensing_process, daemon=True
+        )
+        self.dispensing_thread.start()
 
-        self.update()  # Force draw
-        self.after(500, self.start_serial_communication)
+    def run_dispensing_process(self):
+        return
 
     def start_serial_communication(self):
         try:
-            time.sleep(2)  # Wait before opening serial
-            self.ser = serial.Serial("/dev/ttyACM0", 38400, timeout=2)
-            time.sleep(2)
-
             # Step 1: Send 'dispense;' trigger
             self.ser.write(b"dispense;")
 
@@ -105,5 +85,3 @@ class DispensingPage(tk.Frame):
         except Exception as e:
             print(f"[ERROR] Serial communication: {e}")
             self.finished = True
-
-        self.destroy()  # Close window after finishing
