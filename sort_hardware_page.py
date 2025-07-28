@@ -322,11 +322,15 @@ class SortHardwarePage(tk.Frame):
 
     def increment_stock(self, part, stock_increment):
         print(f"Inventory dict: {self.inventory}")
-        if part in self.inventory:
-            self.inventory[part] += stock_increment
-        else:
-            self.inventory[part] = 0
-        print(f"Updated inventory dict: {self.inventory}")
+        try:
+            if part in self.inventory:
+                self.inventory[part] += stock_increment
+            else:
+                self.inventory[part] = 0
+            print(f"Updated inventory dict: {self.inventory}")
+        except Exception as e:
+            print(f"Exception occurred: {e}")
+            pass
 
     def update_inventory(self, inventory):
         print("Updating Inventory")
