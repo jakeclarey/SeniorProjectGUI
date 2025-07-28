@@ -1,3 +1,4 @@
+
 # dispense_page.py
 import tkinter as tk
 from tkinter import ttk, messagebox
@@ -15,12 +16,12 @@ class DispenseOrderPage(tk.Frame):
         # Top buttons
         tk.Button(
             self,
-            text="Exit",
+            text="Back",
             font=("Arial", 14),
             width=12,
             height=2,
             bg="white",
-            command=lambda: controller.show_frame("IdlePage"),
+            command=lambda: controller.show_frame("ActivityPage"),
         ).place(x=10, y=10)
         tk.Button(
             self,
@@ -140,7 +141,7 @@ class DispenseOrderPage(tk.Frame):
                             category = parts[0].strip()
                             name = parts[1].strip()
                             quantity = int(parts[2].strip())
-                            inventory[f"{category} {name}"] = quantity
+                            inventory[f"{category}:{name}"] = quantity
         except FileNotFoundError:
             inventory = {"No Data": 0}
         return inventory
@@ -185,7 +186,8 @@ class DispenseOrderPage(tk.Frame):
                 return
 
             for hw, qty in self.shopping_list:
-                self.inventory_data[hw] -= qty
+                new_hw = hw.replace(": ", ":") # convert button w/ spaces to actual inventory key.
+                self.inventory_data[new_hw] -= qty
 
             self.credits -= total_credits
             self.controller.current_user_credits = self.credits
@@ -205,6 +207,7 @@ class DispenseOrderPage(tk.Frame):
             # DISPENSE_LOADING_SCREEN()
             self.shopping_list.clear()
             self.hardware_names.clear()
+            self.controller.show_frame("DispensingPage")
 
     def update_keycard_file(self):
         with open("Keycard_Scan_Entries.txt", "r") as f:
