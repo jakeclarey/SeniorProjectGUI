@@ -4,7 +4,6 @@ from PIL import Image, ImageTk
 import cv2
 import threading
 import time
-import serial
 from ultralytics import YOLO
 import math
 
@@ -223,25 +222,34 @@ class SortHardwarePage(tk.Frame):
 
                     # Calculate steps to drop part
                     x1, y1, x2, y2 = results[0].boxes.xyxy[closest_idx]
-                    center_x = int((x2 + x1) / 2)
-                    length_x = int(x2 - x1)
+                    # center_x = int((x2 + x1) / 2)
+                    # length_x = int(x2 - x1)
+
+                    # [WARNING] THIS DOES NOT WORK DUE TO THE CAMERA NOT BEING PARALLEL TO THE CONVEYOR
+                    # steps_per_inch_belt_travel = 3200 / 0.96 (determined by datasheets and CAD models)
+                    # 
+
 
                     # Frame is 640 pixels and there are 6.33 inches of conveyor in frame
                     # ~3200 steps are required to fully push a part off the full conveyor (7.83 inches start to end)
                     # pixels_per_inch = 640 / 6.33
                     # steps_per_inch = 3200 / 7.83
                     # steps_per_pixel = steps_per_inch / pixels_per_inch
-                    pixels_per_inch = 101.106  # pre-calculated
-                    steps_per_pixel = 4.042  # pre-calculated
+                    # pixels_per_inch = 101.106  # pre-calculated
+                    # steps_per_pixel = 4.042  # pre-calculated
+
+                    # TODO LINEAR REGRESSION MAPPING. MAP PIXELS-STEPS IN TUPLE FOR SET STEP WIDTHS
+                    # USE INTERPOLATION BETWEEN THEM TO DETERMINE APPROPRIATE PIXELS-STEPS CURVE FUNCTION
 
                     # Number of steps to get right edge of the part to the end of the conveyor
-                    num_steps = int(
-                        (640 - x2) * steps_per_pixel + 1.5 * pixels_per_inch
-                    )
+                    # num_steps = int(
+                    #     (640 - x2) * steps_per_pixel + 1.5 * pixels_per_inch
+                    # )
 
-                    pixels_to_edge_of_frame = 640 - x2
-                    num_steps = pixels_to_edge_of_frame * steps_per_pixel + 152
-                    pixels_to_edge_of_frame += pixels_to_edge_of_frame
+                    
+                    depth = (-6.2e-6) * (x2 ** 2) + 0.014 * x2  # depth in inches from start of visible belt
+                    distance_to_push = 6.33 - depth           # distance left to reach end of belt
+                    num_steps = distance_to_push * 3333.33        # convert inches to motor steps
 
                     # num_steps = int(640 - (center_x + 0.2 * length_x)) * alpha
 

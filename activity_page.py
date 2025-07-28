@@ -1,13 +1,13 @@
 # activity_page.py
 import tkinter as tk
 from PIL import Image, ImageTk
-import serial
 
 
 class ActivityPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, width=1024, height=600, bg="#0032A0")
         self.controller = controller
+        self.controller.previous_page = "HomePage"
 
         # User info (top-right)
         self.user_id_label = tk.Label(

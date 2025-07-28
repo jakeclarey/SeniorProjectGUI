@@ -40,7 +40,7 @@ class App(tk.Tk):
         self.ser.flush()
 
         # Default previous page to the IdlePage
-        self.previous_page = IdlePage
+        self.previous_page = "IdlePage"
 
         self.frames = {}
 
