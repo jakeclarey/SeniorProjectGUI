@@ -247,7 +247,7 @@ class SortHardwarePage(tk.Frame):
                     # )
 
                     
-                    depth = (-6.2e-6) * (center_x ** 2) + 0.014 * center_x  # depth in inches from start of visible belt
+                    depth = (-6.2e-6) * (x2 ** 2) + 0.014 * x2  # depth in inches from start of visible belt
                     distance_to_push = 6.33 - depth             # distance left to reach end of belt
                     num_steps = int(distance_to_push * 3333.33) # convert inches to motor steps
 
