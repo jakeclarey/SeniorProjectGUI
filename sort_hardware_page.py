@@ -138,7 +138,6 @@ class SortHardwarePage(tk.Frame):
             # Waiting a short moment to ensure serial port is closed from last use
             time.sleep(1)
             self.status_label.config(text="Connecting to motor controller...")
-            self.ser.flush()
 
             # Start sort command
             self.send_command("sort_start\n")

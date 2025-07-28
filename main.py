@@ -75,6 +75,7 @@ class App(tk.Tk):
             self.serial_port = serial.Serial(
                 port=port, baudrate=baudrate, timeout=timeout
             )
+            self.ser.flush()
             print(f"Serial port {port} opened successfully.")
         except serial.SerialException as e:
             print(f"Failed to open serial port: {e}")
