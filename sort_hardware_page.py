@@ -7,7 +7,6 @@ import time
 import serial
 from ultralytics import YOLO
 import math
-import os
 
 
 class SortHardwarePage(tk.Frame):
@@ -51,6 +50,7 @@ class SortHardwarePage(tk.Frame):
         self.cap = None
         self.model = None
         self.current_part_class = None
+        self.session_credits = 0
         self.input_size = 640  # YOLOv8 default input size
 
         # Class names in order from YOLO model
@@ -97,6 +97,7 @@ class SortHardwarePage(tk.Frame):
         self.credits_label.config(text=f"Credits: {credits}")
 
     def tkraise(self, aboveThis=None):
+        self.session_credits = 0
         self.set_user_info(
             self.controller.current_user_id, self.controller.current_user_credits
         )
@@ -108,6 +109,11 @@ class SortHardwarePage(tk.Frame):
             target=self.run_sorting_process, daemon=True
         )
         self.sorting_thread.start()
+        while self.running:
+            continue
+
+        self.status_label.config(text=f"You earned {self.session_credits}!")
+        self.after(3000, lambda: self.controller.show_frame("ActivityPage"))
 
     def run_sorting_process(self):
         try:
@@ -145,6 +151,7 @@ class SortHardwarePage(tk.Frame):
                 # If no parts detected for x seconds, exit sort flow
                 if (time.time() - self.last_detection_time) > timeout_interval:
                     self.status_label.config(text="Timeout: No parts detected")
+                    time.sleep(3)  # Ensures timeout message is shown for at least 3 sec
                     break
 
                 self.status_label.config(
@@ -230,6 +237,7 @@ class SortHardwarePage(tk.Frame):
                     self.status_label.config(
                         text=f"Sorted: {self.class_names[self.current_part_class]}"
                     )
+                    self.session_credits += 1
                     self.increment_user_credits()
                     self.update_ui_credits()
 
@@ -242,14 +250,13 @@ class SortHardwarePage(tk.Frame):
                 time.sleep(1)
 
             self.cleanup()
-            self.after(0, lambda: self.controller.show_frame("ActivityPage"))
+            self.running = False
 
         except Exception as e:
             self.status_label.config(text=f"Error: {e}")
             print("Exception in sorting thread:", e)
             time.sleep(3)
             self.cleanup()
-            self.after(3000, lambda: self.controller.show_frame("ActivityPage"))
 
     def send_command(self, command):
         print(f"Sending {command}")

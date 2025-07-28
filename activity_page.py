@@ -34,7 +34,7 @@ class ActivityPage(tk.Frame):
             self,
             text="Dispense Hardware",
             **btn_style,
-            command=lambda: controller.show_frame("DispenseSelectPage"),
+            command=lambda: controller.show_frame("DispenseOrderPage"),
         )
         dispense_btn.place(x=230, y=10)
 
