@@ -243,7 +243,7 @@ class SortHardwarePage(tk.Frame):
                         text=f"Sorted: {self.class_names[self.current_part_class]}"
                     )
                     self.session_credits += 1
-                    self.increment_stock(self.class_name_mapping[self.current_part_class], 1)
+                    # self.increment_stock(self.class_name_mapping[self.current_part_class], 1)
                     self.increment_user_credits()
                     self.update_ui_credits()
 
@@ -343,7 +343,7 @@ class SortHardwarePage(tk.Frame):
         if self.ser:
             try:
                 self.send_command("motors_off\n")
-                self.update_inventory(self.inventory)
+                # self.update_inventory(self.inventory)
                 self.send_command("sorting_done\n")
             except:
                 pass
