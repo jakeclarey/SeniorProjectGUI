@@ -96,3 +96,4 @@ class ActivityPage(tk.Frame):
             else:
                 print("STM is not in the sort state, or is an unexpected state")
                 break
+        self.ser.close()
