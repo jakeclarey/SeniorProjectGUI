@@ -78,7 +78,6 @@ class ActivityPage(tk.Frame):
         self.set_user_info(
             self.controller.current_user_id, self.controller.current_user_credits
         )
-        self.status_label.config(text="Connecting to motor controller...")
         self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
         self.ser.flush()
         self.send_command("sort_early_exit\n")
