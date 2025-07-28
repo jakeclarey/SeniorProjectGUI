@@ -225,10 +225,25 @@ class SortHardwarePage(tk.Frame):
                     x1, y1, x2, y2 = results[0].boxes.xyxy[closest_idx]
                     center_x = int((x2 + x1) / 2)
                     length_x = int(x2 - x1)
-                    alpha = 10  # pixels-to-steps ratio (85.5 mils 1.5 inches unaccounted for in frame)
-                    # 85.5 mils of travel per 400 steps
-                    # pixel to steps converstion = (400 steps / 0.0855 inches) * ()
-                    num_steps = int(640 - (center_x + 0.2 * length_x)) * alpha
+
+                    # Frame is 640 pixels and there are 6.33 inches of conveyor in frame
+                    # ~3200 steps are required to fully push a part off the full conveyor (7.83 inches start to end)
+                    # pixels_per_inch = 640 / 6.33
+                    # steps_per_inch = 3200 / 7.83
+                    # steps_per_pixel = steps_per_inch / pixels_per_inch
+                    pixels_per_inch = 101.106  # pre-calculated
+                    steps_per_pixel = 4.042  # pre-calculated
+
+                    # Number of steps to get right edge of the part to the end of the conveyor
+                    num_steps = int(
+                        (640 - x2) * steps_per_pixel + 1.5 * pixels_per_inch
+                    )
+
+                    pixels_to_edge_of_frame = 640 - x2
+                    num_steps = pixels_to_edge_of_frame * steps_per_pixel + 152
+                    pixels_to_edge_of_frame += pixels_to_edge_of_frame
+
+                    # num_steps = int(640 - (center_x + 0.2 * length_x)) * alpha
 
                     # Draw detections on frame
                     annotated_frame = results[0].plot()
@@ -246,7 +261,12 @@ class SortHardwarePage(tk.Frame):
                     )
                     self.session_credits += 1
                     print("Attempting to increment stock")
-                    self.increment_stock(self.class_name_mapping[self.class_names[self.current_part_class]], 1)
+                    self.increment_stock(
+                        self.class_name_mapping[
+                            self.class_names[self.current_part_class]
+                        ],
+                        1,
+                    )
                     self.increment_user_credits()
                     self.update_ui_credits()
 
@@ -344,7 +364,6 @@ class SortHardwarePage(tk.Frame):
                     file.write(f"{key}:{pair}\n")
         except FileNotFoundError:
             print("[ERROR]: Inventory.txt not found after sorting process.")
-
 
     def cleanup(self):
         self.running = False
