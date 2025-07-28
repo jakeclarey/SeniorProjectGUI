@@ -7,15 +7,12 @@ yellow_led = LED(23)
 
 
 def update_inventory_leds(inventory_file="Inventory.txt"):
-    print("Updating inventory LEDs")
     red_led.off()
     yellow_led.off()
 
     try:
         with open(inventory_file, "r") as f:
             for line in f:
-                if red_led.on():
-                    break
                 qty = int(line.strip().rsplit(":", 1)[-1])
                 if qty < 40:
                     red_led.on()

@@ -1,8 +1,6 @@
 # dispense_page.py
 import tkinter as tk
 from tkinter import ttk, messagebox
-from led_utils import update_inventory_leds
-
 
 class DispenseOrderPage(tk.Frame):
     def __init__(self, parent, controller):
