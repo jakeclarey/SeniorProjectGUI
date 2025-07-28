@@ -323,7 +323,7 @@ class SortHardwarePage(tk.Frame):
 
     def increment_stock(self, part, stock_increment):
         print(f"Inventory dict: {self.inventory}")
-        if part in self.inventory.items():
+        if part in self.inventory:
             self.inventory[part] += stock_increment
         else:
             self.inventory[part] = 0
@@ -332,7 +332,7 @@ class SortHardwarePage(tk.Frame):
     def update_inventory(self, inventory):
         print("Updating Inventory")
         try:
-            with open("Inventory.txt", "r") as file:
+            with open("Inventory.txt", "w") as file:
                 for key, pair in inventory.items():
                     print(f"Writing to inventory file: {key}:{pair}")
                     file.write(f"{key}:{pair}\n")
