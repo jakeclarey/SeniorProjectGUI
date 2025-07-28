@@ -27,6 +27,6 @@ def update_inventory_leds(inventory_file="Inventory.txt"):
                         yellow_led.on()
                         # don't return — keep looking for a possible red
 
-    time.sleep(100)
+        time.sleep(100)
     except FileNotFoundError:
         pass
