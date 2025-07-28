@@ -1,6 +1,5 @@
 # led_utils.py
 from gpiozero import LED
-import time
 
 # Define red and yellow LEDs (use the same pins everywhere)
 red_led = LED(24)
@@ -15,18 +14,19 @@ def update_inventory_leds(inventory_file="Inventory.txt"):
     try:
         with open(inventory_file, "r") as f:
             for line in f:
-                print(line)
                 parts = line.strip().rsplit(": ", 1)
                 if len(parts) == 2:
                     _, qty = parts
                     qty = int(qty)
                     if qty < 40:
                         red_led.on()
+                        print(f"Red LED is {'on' if red_led.is_active else 'off'}")
                         return
                     elif qty < 100:
                         yellow_led.on()
+                        print(
+                            f"Yellow LED is {'on' if yellow_led.is_active else 'off'}"
+                        )
                         # don't return — keep looking for a possible red
-
-        time.sleep(100)
     except FileNotFoundError:
         pass
