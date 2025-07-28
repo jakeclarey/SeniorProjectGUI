@@ -110,7 +110,7 @@ class PreSortPage(tk.Frame):
             elif response == "NACK\n":
                 print("STM is in sort state, or is in an unexpected state.")
                 break
-        self.controller.show_frame("ActivityPage")
+        self.after(0, "ActivityPage")
 
     def send_command(self, command):
         print(f"Sending {command}")
