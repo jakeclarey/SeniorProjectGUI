@@ -222,7 +222,7 @@ class SortHardwarePage(tk.Frame):
 
                     # Calculate steps to drop part
                     x1, y1, x2, y2 = results[0].boxes.xyxy[closest_idx]
-                    # center_x = int((x2 + x1) / 2)
+                    center_x = int((x2 + x1) / 2)
                     # length_x = int(x2 - x1)
 
                     # [WARNING] THIS DOES NOT WORK DUE TO THE CAMERA NOT BEING PARALLEL TO THE CONVEYOR
@@ -247,9 +247,9 @@ class SortHardwarePage(tk.Frame):
                     # )
 
                     
-                    depth = (-6.2e-6) * (x2 ** 2) + 0.014 * x2  # depth in inches from start of visible belt
-                    distance_to_push = 6.33 - depth           # distance left to reach end of belt
-                    num_steps = distance_to_push * 3333.33        # convert inches to motor steps
+                    depth = (-6.2e-6) * (center_x ** 2) + 0.014 * center_x  # depth in inches from start of visible belt
+                    distance_to_push = 6.33 - depth             # distance left to reach end of belt
+                    num_steps = int(distance_to_push * 3333.33) # convert inches to motor steps
 
                     # num_steps = int(640 - (center_x + 0.2 * length_x)) * alpha
 
