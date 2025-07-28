@@ -148,7 +148,7 @@ class SortHardwarePage(tk.Frame):
 
             self.status_label.config(text="Sorting in progress...")
             self.last_detection_time = time.time()
-            timeout_interval = 10
+            timeout_interval = 20
 
             while self.running:
 
