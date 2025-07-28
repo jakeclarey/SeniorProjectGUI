@@ -80,7 +80,6 @@ class ActivityPage(tk.Frame):
             self.controller.current_user_id, self.controller.current_user_credits
         )
         self.ser.flush()
-        self.send_command("sort_early_exit\n")
         super().tkraise(aboveThis)
 
     def send_command(self, command):

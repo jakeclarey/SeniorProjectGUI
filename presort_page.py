@@ -18,7 +18,7 @@ class PreSortPage(tk.Frame):
             font=("Arial", 14),
             width=18,
             height=2,
-            command=lambda: self.controller.show_frame("ActivityPage"),
+            command=self.sort_early_exit,
         )
         button.place(x=10, y=10)  # Top-left position
 
@@ -98,6 +98,19 @@ class PreSortPage(tk.Frame):
         self.ser.flush()
         self.send_command("sort\n")
         super().tkraise(aboveThis)
+
+    def sort_early_exit_command(self):
+        print("Sending sort_early_exit")
+        self.ser.write("sort_early_exit".encode())
+        while True:
+            response = self.ser.readline().decode()
+            print(response)
+            if response == "ACK\n":
+                break
+            elif response == "NACK\n":
+                print("STM is in sort state, or is in an unexpected state.")
+                break
+        self.controller.show_frame("ActivityPage")
 
     def send_command(self, command):
         print(f"Sending {command}")
