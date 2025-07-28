@@ -9,25 +9,36 @@ from ultralytics import YOLO
 import math
 import os
 
+
 class SortHardwarePage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, width=1024, height=600, bg="#0032A0")
         self.controller = controller
 
         # User info (top-right)
-        self.user_id_label = tk.Label(self, text="ID: -", font=("Arial", 16), fg="white", bg="#0032A0")
+        self.user_id_label = tk.Label(
+            self, text="ID: -", font=("Arial", 16), fg="white", bg="#0032A0"
+        )
         self.user_id_label.place(relx=1, y=10, anchor="ne", x=-10)
 
-        self.credits_label = tk.Label(self, text="Credits: 0", font=("Arial", 16), fg="white", bg="#0032A0")
+        self.credits_label = tk.Label(
+            self, text="Credits: 0", font=("Arial", 16), fg="white", bg="#0032A0"
+        )
         self.credits_label.place(relx=1, y=50, anchor="ne", x=-10)
 
         # Status message (bottom center)
-        self.status_label = tk.Label(self, text="Initializing...", font=("Arial", 16), fg="white", bg="#0032A0")
+        self.status_label = tk.Label(
+            self, text="Initializing...", font=("Arial", 16), fg="white", bg="#0032A0"
+        )
         self.status_label.place(relx=0.5, rely=0.95, anchor="center")
 
         # Frame for live feed
-        self.feed_frame = tk.Frame(self, bg="white", highlightbackground="black", highlightthickness=25)
-        self.feed_frame.place(relx=0.5, rely=0.5, anchor="center", width=600, height=400)
+        self.feed_frame = tk.Frame(
+            self, bg="white", highlightbackground="black", highlightthickness=25
+        )
+        self.feed_frame.place(
+            relx=0.5, rely=0.5, anchor="center", width=600, height=400
+        )
 
         self.video_label = tk.Label(self.feed_frame, bg="white")
         self.video_label.pack(expand=True)
@@ -41,7 +52,7 @@ class SortHardwarePage(tk.Frame):
         self.model = None
         self.current_part_class = None
         self.input_size = 640  # YOLOv8 default input size
-        
+
         # Class names in order from YOLO model
         self.class_names = [
             "M2x0.4-10mm",
@@ -54,7 +65,7 @@ class SortHardwarePage(tk.Frame):
             "M3x0.5-LSNUT",
             "M3x0.5-MSLNUT",
         ]
-        
+
         # Names to send over UART for sort ramp control
         self.stepper_names = [
             "Screw M2 x 10",
@@ -86,12 +97,16 @@ class SortHardwarePage(tk.Frame):
         self.credits_label.config(text=f"Credits: {credits}")
 
     def tkraise(self, aboveThis=None):
-        self.set_user_info(self.controller.current_user_id, self.controller.current_user_credits)
+        self.set_user_info(
+            self.controller.current_user_id, self.controller.current_user_credits
+        )
         super().tkraise(aboveThis)
 
         self.status_label.config(text="Starting sorting process...")
         self.running = True
-        self.sorting_thread = threading.Thread(target=self.run_sorting_process, daemon=True)
+        self.sorting_thread = threading.Thread(
+            target=self.run_sorting_process, daemon=True
+        )
         self.sorting_thread.start()
 
     def run_sorting_process(self):
@@ -112,39 +127,41 @@ class SortHardwarePage(tk.Frame):
 
             # Open serial port
             self.status_label.config(text="Connecting to motor controller...")
-            self.ser = serial.Serial('/dev/ttyACM0', baudrate=38400, timeout=None)
+            self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
             self.ser.flush()
-            
+
             # REMOVE THIS LATER (SHOULD BE IN PRESORT)
             self.send_command("sort\n")
-            
+
             # Start sort command
             # self.send_command("start_sort\n")
-            
+
             # Send motors_on
             self.send_command("motors_on\n")
 
             self.status_label.config(text="Sorting in progress...")
             self.last_detection_time = time.time()
             timeout_interval = 45
-            
+
             while self.running:
-                
+
                 # If no parts detected for x seconds, exit sort flow
                 if (time.time() - self.last_detection_time) > timeout_interval:
                     self.status_label.config(text="Timeout: No parts detected")
                     break
-                     
-                self.status_label.config(text=f"Time elapsed since last detection... {int(time.time() - self.last_detection_time)}")
+
+                self.status_label.config(
+                    text=f"Time elapsed since last detection... {int(time.time() - self.last_detection_time)}"
+                )
                 ret, frame = self.cap.read()
                 if not ret:
                     self.current_part = None
                     continue
-                
+
                 results = self.model(frame, verbose=False)
                 annotated_frame = results[0].plot()
                 self.update_feed(annotated_frame)
-                
+
                 detected = False
                 if len(results[0].boxes) == 0:
                     self.current_part = None
@@ -166,7 +183,7 @@ class SortHardwarePage(tk.Frame):
                     else:
                         self.send_command("motors_on\n")
                         continue
-                    
+
                     # Find object closest to ramp (max x2)
                     closest_idx = None
                     max_x2 = -float("inf")
@@ -176,11 +193,11 @@ class SortHardwarePage(tk.Frame):
                             max_x2 = x2
                             closest_idx = i
 
-        	    # If object is too far right (beyond frame), restart motors
+                # If object is too far right (beyond frame), restart motors
                 if max_x2 >= 640:
-        	        self.send_command("motors_on\n")
-        	        continue
-                
+                    self.send_command("motors_on\n")
+                    continue
+
                 if closest_idx is None:
                     # Resume motors and continue
                     self.send_command("motors_on\n")
@@ -189,27 +206,33 @@ class SortHardwarePage(tk.Frame):
                 # Get confidence and class
                 confidence = math.ceil((results[0].boxes[closest_idx].conf * 100)) / 100
                 self.current_part_class = int(results[0].boxes.cls[closest_idx])
-                
+
                 if confidence > 0.90:
-                    self.status_label.config(text=f"Now sorting {self.class_names[self.current_part_class]}")
-                    
+                    self.status_label.config(
+                        text=f"Now sorting {self.class_names[self.current_part_class]}"
+                    )
+
                     # Calculate steps to drop part
                     x1, y1, x2, y2 = results[0].boxes.xyxy[closest_idx]
                     center_x = int((x2 + x1) / 2)
                     length_x = int(x2 - x1)
-                    alpha = 10 # pixels-to-steps ratio
+                    alpha = 10  # pixels-to-steps ratio
                     num_steps = int(640 - (center_x + 0.2 * length_x)) * alpha
-                    
+
                     # Draw detections on frame
                     annotated_frame = results[0].plot()
                     self.update_feed(annotated_frame)
-                    
+
                     # Send stepper command string
-                    command_string = f"{self.stepper_names[self.current_part_class]}:{num_steps}\n"
+                    command_string = (
+                        f"{self.stepper_names[self.current_part_class]}:{num_steps}\n"
+                    )
 
                     self.send_command(command_string)
-                    
-                    self.status_label.config(text=f"Sorted: {self.class_names[self.current_part_class]}")
+
+                    self.status_label.config(
+                        text=f"Sorted: {self.class_names[self.current_part_class]}"
+                    )
                     self.increment_user_credits()
                     self.update_ui_credits()
 
@@ -250,7 +273,9 @@ class SortHardwarePage(tk.Frame):
             conf = det[4]
             if conf > 0.9:  # <-- Changed to 90% threshold
                 cls_id = int(det[5])
-                name = f"Object_{cls_id}"  # replace with actual class names if available
+                name = (
+                    f"Object_{cls_id}"  # replace with actual class names if available
+                )
                 x1, y1, x2, y2 = map(int, det[:4])
                 detections.append((name, conf, (x1, y1, x2, y2)))
 
@@ -259,8 +284,15 @@ class SortHardwarePage(tk.Frame):
     def draw_detections(self, frame, detections):
         for name, conf, (x1, y1, x2, y2) in detections:
             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.putText(frame, f"{name} {conf:.2f}", (x1, y1 - 10),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+            cv2.putText(
+                frame,
+                f"{name} {conf:.2f}",
+                (x1, y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.6,
+                (0, 255, 0),
+                2,
+            )
         return frame
 
     def update_feed(self, frame):
@@ -282,12 +314,16 @@ class SortHardwarePage(tk.Frame):
                 if f"User ID: {self.controller.current_user_id}" in line:
                     parts = line.strip().split(", ")
                     credits = int(parts[1].split(": ")[1]) + 1
-                    f.write(f"User ID: {self.controller.current_user_id}, Credits: {credits}\n")
+                    f.write(
+                        f"User ID: {self.controller.current_user_id}, Credits: {credits}\n"
+                    )
                 else:
                     f.write(line)
 
     def update_ui_credits(self):
-        self.credits_label.config(text=f"Credits: {self.controller.current_user_credits}")
+        self.credits_label.config(
+            text=f"Credits: {self.controller.current_user_credits}"
+        )
 
     def increment_inventory_stock(self):
         print("TODO")
@@ -303,5 +339,3 @@ class SortHardwarePage(tk.Frame):
             except:
                 pass
             self.ser.close()
-
-

@@ -11,20 +11,24 @@ last_read_time = time.time()
 
 current_user_id = None
 
+
 # Callback handlers
 def d0_callback():
     global rfid_bits, last_read_time
     rfid_bits += "0"
     last_read_time = time.time()
 
+
 def d1_callback():
     global rfid_bits, last_read_time
     rfid_bits += "1"
     last_read_time = time.time()
 
+
 # Attach callbacks initially
 D0.when_pressed = d0_callback
 D1.when_pressed = d1_callback
+
 
 def scan():
     global current_user_id, rfid_bits
@@ -56,6 +60,7 @@ def scan():
         time.sleep(0.1)
         return None
 
+
 def store_student_id(student_id_decimal):
     try:
         with open("Keycard_Scan_Entries.txt", "r") as file:
@@ -70,14 +75,19 @@ def store_student_id(student_id_decimal):
     with open("Keycard_Scan_Entries.txt", "a") as file:
         file.write(f"User ID: {student_id_decimal}, Credits: 100\n")
 
+
 def get_user_credits(student_id):
-    student_id_decimal = int(student_id) if isinstance(student_id, str) and student_id.isdigit() else student_id
+    student_id_decimal = (
+        int(student_id)
+        if isinstance(student_id, str) and student_id.isdigit()
+        else student_id
+    )
 
     try:
         with open("Keycard_Scan_Entries.txt", "r") as file:
             for line in file:
                 if f"User ID: {student_id_decimal}" in line:
-                    parts = line.strip().split(',')
+                    parts = line.strip().split(",")
                     for part in parts:
                         if "Credits" in part:
                             return int(part.strip().split(":")[1])
