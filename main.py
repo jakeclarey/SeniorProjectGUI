@@ -9,7 +9,7 @@ from activity_page import ActivityPage
 from presort_page import PreSortPage
 from sort_hardware_page import SortHardwarePage
 from dispense_order_page import DispenseOrderPage
-from dispensing_page import DispensingPage
+# from dispensing_page import DispensingPage
 
 from PIL import Image, ImageTk
 
@@ -54,7 +54,7 @@ class App(tk.Tk):
             PreSortPage,
             SortHardwarePage,
             DispenseOrderPage,
-            DispensingPage,
+            # DispensingPage,
             PageOne,
         ):
             page_name = PageClass.__name__
