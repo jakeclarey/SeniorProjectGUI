@@ -1,7 +1,7 @@
 # admin_menu_page.py
 import tkinter as tk
 from tkinter import messagebox
-
+from led_utils import update_inventory_leds
 
 class AdminMenuPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -206,6 +206,7 @@ class AdminMenuPage(tk.Frame):
         self.selected_button = None
         self.selected_part = None
         self.selected_label.config(text="Selected: None")
+        update_inventory_leds()
 
     def modify_stock(self, part, new_stock):
         try:
@@ -219,6 +220,7 @@ class AdminMenuPage(tk.Frame):
                         lines.append(line)
             with open("Inventory.txt", "w") as f:
                 f.writelines(lines)
+            update_inventory_leds()
         except FileNotFoundError:
             pass
 
@@ -237,6 +239,7 @@ class AdminMenuPage(tk.Frame):
                 f.writelines(lines)
             messagebox.showinfo("Success", "All stock reset to 200")
             self.load_parts()
+            update_inventory_leds()
         except FileNotFoundError:
             pass
 
