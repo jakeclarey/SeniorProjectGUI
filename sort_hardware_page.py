@@ -130,9 +130,6 @@ class SortHardwarePage(tk.Frame):
             self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
             self.ser.flush()
 
-            # REMOVE THIS LATER (SHOULD BE IN PRESORT)
-            # self.send_command("sort\n")
-
             # Start sort command
             self.send_command("sort_start\n")
 

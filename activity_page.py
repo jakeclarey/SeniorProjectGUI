@@ -1,7 +1,7 @@
 # activity_page.py
 import tkinter as tk
 from PIL import Image, ImageTk
-
+import serial
 
 class ActivityPage(tk.Frame):
     def __init__(self, parent, controller):
@@ -78,4 +78,20 @@ class ActivityPage(tk.Frame):
         self.set_user_info(
             self.controller.current_user_id, self.controller.current_user_credits
         )
+        self.status_label.config(text="Connecting to motor controller...")
+        self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
+        self.ser.flush()
+        self.send_command("sort_early_exit\n")
         super().tkraise(aboveThis)
+
+    def send_command(self, command):
+            print(f"Sending {command}")
+            self.ser.write(command.encode())
+            while True:
+                response = self.ser.readline().decode()
+                print(response)
+                if response == "ACK\n":
+                    break
+                elif response == "NACK\n":
+                    print("STM is not in the sort state, or is an unexpected state")
+                    break
