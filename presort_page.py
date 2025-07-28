@@ -3,6 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import threading
 import reed_utils
+import serial
 
 
 class PreSortPage(tk.Frame):
@@ -93,4 +94,19 @@ class PreSortPage(tk.Frame):
 
     def tkraise(self, aboveThis=None):
         self.status_label.config(text="")
+        self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
+        self.ser.flush()
+        self.send_command("sort\n")
         super().tkraise(aboveThis)
+
+    def send_command(self, command):
+        print(f"Sending {command}")
+        self.ser.write(command.encode())
+        while True:
+            response = self.ser.readline().decode()
+            print(response)
+            if response == "ACK\n":
+                break
+            elif response == "NACK\n":
+                print("STM is in sort state, or is in an unexpected state.")
+                break

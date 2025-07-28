@@ -8,9 +8,8 @@ from admin_menu_page import AdminMenuPage
 from activity_page import ActivityPage
 from presort_page import PreSortPage
 from sort_hardware_page import SortHardwarePage
-from dispense_select_page import DispenseSelectPage
+from dispense_order_page import DispenseOrderPage
 
-# from dispense_loading_page import DispenseLoadingPage
 from PIL import Image, ImageTk
 
 from led_utils import update_inventory_leds
@@ -43,7 +42,7 @@ class App(tk.Tk):
             ActivityPage,
             PreSortPage,
             SortHardwarePage,
-            DispenseSelectPage,
+            DispenseOrderPage,
             PageOne,
         ):
             page_name = PageClass.__name__

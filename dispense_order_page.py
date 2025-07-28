@@ -1,11 +1,11 @@
 # dispense_page.py
 import tkinter as tk
 from tkinter import ttk, messagebox
-from dispense_loading_page import DispenseLoadingPage
+from dispensing_page import DispenseOrderPage
 from led_utils import update_inventory_leds
 
 
-class DispenseSelectPage(tk.Frame):
+class DispenseOrderPage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, width=1024, height=600, bg="#0032A0")
         self.controller = controller

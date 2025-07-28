@@ -131,17 +131,17 @@ class SortHardwarePage(tk.Frame):
             self.ser.flush()
 
             # REMOVE THIS LATER (SHOULD BE IN PRESORT)
-            self.send_command("sort\n")
+            # self.send_command("sort\n")
 
             # Start sort command
-            # self.send_command("start_sort\n")
+            self.send_command("start_sort\n")
 
             # Send motors_on
             self.send_command("motors_on\n")
 
             self.status_label.config(text="Sorting in progress...")
             self.last_detection_time = time.time()
-            timeout_interval = 45
+            timeout_interval = 20
 
             while self.running:
 
@@ -245,14 +245,14 @@ class SortHardwarePage(tk.Frame):
                 time.sleep(1)
 
             self.cleanup()
-            self.controller.show_frame("PreSortPage")
+            self.after(0, lambda: self.controller.show_frame("ActivityPage"))
 
         except Exception as e:
             self.status_label.config(text=f"Error: {e}")
             print("Exception in sorting thread:", e)
             time.sleep(3)
             self.cleanup()
-            self.controller.show_frame("EarnedCreditsPage")
+            self.after(3000, lambda: self.controller.show_frame("ActivityPage"))
 
     def send_command(self, command):
         print(f"Sending {command}")
@@ -262,38 +262,6 @@ class SortHardwarePage(tk.Frame):
             print(response)
             if response == "ACK\n":
                 break
-
-    def run_inference(self, frame):
-        # Run inference
-        outputs = self.model(frame, verbose=False)
-
-        # Parse outputs (simplified YOLO parsing)
-        detections = []
-        for det in outputs[0]:
-            conf = det[4]
-            if conf > 0.9:  # <-- Changed to 90% threshold
-                cls_id = int(det[5])
-                name = (
-                    f"Object_{cls_id}"  # replace with actual class names if available
-                )
-                x1, y1, x2, y2 = map(int, det[:4])
-                detections.append((name, conf, (x1, y1, x2, y2)))
-
-        return detections
-
-    def draw_detections(self, frame, detections):
-        for name, conf, (x1, y1, x2, y2) in detections:
-            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
-            cv2.putText(
-                frame,
-                f"{name} {conf:.2f}",
-                (x1, y1 - 10),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                0.6,
-                (0, 255, 0),
-                2,
-            )
-        return frame
 
     def update_feed(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

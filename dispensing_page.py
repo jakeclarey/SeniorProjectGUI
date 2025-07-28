@@ -6,7 +6,7 @@ import time
 import keycard
 
 
-class DispenseLoadingPage(tk.Frame):
+class DispensingPage(tk.Frame):
     def __init__(self):
         super().__init__(parent, width=1024, height=600, bg="#0032A0")
         self.title("Dispensing...")
