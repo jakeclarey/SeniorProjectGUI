@@ -2,6 +2,7 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import serial
+import threading
 
 
 class ActivityPage(tk.Frame):
@@ -79,11 +80,14 @@ class ActivityPage(tk.Frame):
         self.set_user_info(
             self.controller.current_user_id, self.controller.current_user_credits
         )
-
-        self.after(200, self.init_serial_and_send_command("sort_early_exit\n"))
+        self.after(200, lambda: self.start_send_command_threaded("sort_early_exit\n"))
         super().tkraise(aboveThis)
 
-        self.ser.close()
+    def start_send_command_threaded(self, command):
+        self.uart_thread = threading.Thread(
+            target=lambda: self.init_serial_and_send_command(command), daemon=True
+        )
+        self.uart_thread.start()
 
     def init_serial_and_send_command(self, command):
         self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
@@ -98,3 +102,5 @@ class ActivityPage(tk.Frame):
             else:
                 print("STM is not in the sort state, or is an unexpected state")
                 break
+
+        self.ser.close()

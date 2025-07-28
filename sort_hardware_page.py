@@ -251,7 +251,6 @@ class SortHardwarePage(tk.Frame):
                     self.send_command(command_string)
                 time.sleep(1)
 
-            time.sleep(3)  # Ensures timeout message is shown for at least 3 sec
             self.cleanup()
 
         except Exception as e:
