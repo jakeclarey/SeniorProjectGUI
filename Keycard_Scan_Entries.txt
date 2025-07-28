@@ -2,5 +2,5 @@
 User ID: 3344, Credits: 385
 User ID: 234235, Credits: 98
 User ID: 12039515, Credits: 1245
-User ID: 16940588, Credits: 227
+User ID: 16940588, Credits: 1000000
 User ID: 16939783, Credits: 106
