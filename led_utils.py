@@ -14,18 +14,14 @@ def update_inventory_leds(inventory_file="Inventory.txt"):
     try:
         with open(inventory_file, "r") as f:
             for line in f:
+                if red_led.on():
+                    break
                 qty = int(line.strip().rsplit(":", 1)[-1])
                 if qty < 40:
-                    print(line)
                     red_led.on()
-                    print(f"Red LED is {'on' if red_led.is_active else 'off'}")
-                    print("Turn on red?")
                     return
                 elif qty < 100:
-                    print(line)
                     yellow_led.on()
-                    print("Turn on yellow?")
-                    print(f"Yellow LED is {'on' if yellow_led.is_active else 'off'}")
                     # don't return — keep looking for a possible red
     except FileNotFoundError:
         pass
