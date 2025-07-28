@@ -16,9 +16,7 @@ def update_inventory_leds(inventory_file="Inventory.txt"):
                 qty = int(line.strip().rsplit(":", 1)[-1])
                 if qty < 40:
                     red_led.on()
-                    return
                 elif qty < 100:
                     yellow_led.on()
-                    # don't return — keep looking for a possible red
     except FileNotFoundError:
         pass
