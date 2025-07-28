@@ -103,7 +103,6 @@ class SortHardwarePage(tk.Frame):
             self.controller.current_user_id, self.controller.current_user_credits
         )
         self.inventory = self.load_inventory()
-        print(self.inventory)
 
         super().tkraise(aboveThis)
 
@@ -333,9 +332,7 @@ class SortHardwarePage(tk.Frame):
     def update_inventory(self, inventory):
         print("Updating Inventory")
         try:
-
             with open("Inventory.txt", "w") as file:
-                print("Inventory.txt opened in write mode")
                 for key, pair in inventory.items():
                     print(f"Writing to inventory file: {key}:{pair}")
                     file.write(f"{key}:{pair}\n")
