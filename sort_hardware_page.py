@@ -13,6 +13,7 @@ class SortHardwarePage(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent, width=1024, height=600, bg="#0032A0")
         self.controller = controller
+        self.inventory = self.load_inventory()
 
         # User info (top-right)
         self.user_id_label = tk.Label(
@@ -101,6 +102,8 @@ class SortHardwarePage(tk.Frame):
         self.set_user_info(
             self.controller.current_user_id, self.controller.current_user_credits
         )
+        self.inventory = self.load_inventory()
+
         super().tkraise(aboveThis)
 
         self.status_label.config(text="Starting sorting process...")
@@ -240,6 +243,7 @@ class SortHardwarePage(tk.Frame):
                         text=f"Sorted: {self.class_names[self.current_part_class]}"
                     )
                     self.session_credits += 1
+                    # self.modify_stock(, 1)
                     self.increment_user_credits()
                     self.update_ui_credits()
 
@@ -298,8 +302,30 @@ class SortHardwarePage(tk.Frame):
             text=f"Credits: {self.controller.current_user_credits}"
         )
 
-    def increment_inventory_stock(self):
-        print("TODO")
+    def load_inventory(self):
+        inventory = {}
+        try:
+            with open("Inventory.txt", "r") as file:
+                for line in file:
+                    if ":" in line:
+                        parts = line.strip().split(":")
+                        if len(parts) == 3:
+                            category = parts[0].strip()
+                            name = parts[1].strip()
+                            quantity = int(parts[2].strip())
+                            inventory[f"{category} {name}"] = quantity
+            print(f"Loading inventory in sorting page: {inventory}")
+        except FileNotFoundError:
+            inventory = {"No Data": 0}
+        return inventory
+
+    # def increment_stock(self, part, stock_increment):
+    #     print(f"Inventory dict: {self.inventory}")
+    #     if part in self.inventory:
+    #         self.inventory[part] += stock_increment
+    #     else:
+    #         self.inventory[part] = 0
+    #     print(f"Updated inventory dict: {self.inventory}")
 
     def cleanup(self):
         self.running = False
