@@ -3,6 +3,7 @@ import tkinter as tk
 from PIL import Image, ImageTk
 import serial
 import threading
+import time
 
 
 class ActivityPage(tk.Frame):
@@ -102,5 +103,4 @@ class ActivityPage(tk.Frame):
             else:
                 print("STM is not in the sort state, or is an unexpected state")
                 break
-
         self.ser.close()

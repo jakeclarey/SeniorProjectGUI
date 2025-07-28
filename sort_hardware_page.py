@@ -135,6 +135,8 @@ class SortHardwarePage(tk.Frame):
             self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
             # Open serial port
+            # Waiting a short moment to ensure serial port is closed from last use
+            time.sleep(1)
             self.status_label.config(text="Connecting to motor controller...")
             self.ser = serial.Serial("/dev/ttyACM0", baudrate=38400, timeout=None)
             self.ser.flush()
