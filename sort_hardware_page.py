@@ -352,13 +352,16 @@ class SortHardwarePage(tk.Frame):
 
     def get_steps_from_x2(self, x2):
         calibration_data = [
-            (100, 5266),  # Was 5666 and just adjusted for fun
-            (200, 4466),  # Working ?
-            (280, 4006),  # Added in upon observation
-            (300, 3806),  # Was 4066 and .25 seconds too long
-            (340, 3506),  # Added in upon observation
-            (400, 2566),  # Was 2666 and part hanging off
-            (420, 2966),  # Added in upon observation
+            (100, 5260),  # Was 5666 and just adjusted for fun
+            (200, 4460),  # Working ?
+            (280, 4000),  # Added in upon observation
+            (300, 3800),  # Was 4066 and .25 seconds too long
+            (320, 3650),  # Added in upon observation
+            (340, 3500),  # Added in upon observation
+            (380, 3030),  # Added in upon observation
+            (400, 2560),  # Was 2666 and part hanging off
+            (420, 2960),  # Added in upon observation
+            (460, 3000),  # Added in upon observation
             (500, 3200),  # Working ?
             (600, 2000),  # Was 1900 and 0.1 seconds too short
             (640, 1200),  # Have never seen also will not occur as at 640 it trashes
