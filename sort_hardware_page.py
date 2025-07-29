@@ -351,11 +351,11 @@ class SortHardwarePage(tk.Frame):
         return inventory
 
     def get_steps_from_x2(self, x2):
-        calibration_data = [ #  (steps * (.0006s / step) - 5s) / (0.0006s)
-            (100, 11666),
+        calibration_data = [ 
+            (100, 11666), #
             (200, 9666),
             (300, 7666),
-            (400, 4666),
+            (400, 2666), # Was 4666 and 3 seconds too long
             (500, 3200),
             (600, 2200),
             (640, 2000),
