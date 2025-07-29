@@ -352,7 +352,7 @@ class SortHardwarePage(tk.Frame):
 
     def get_steps_from_x2(self, x2):
         calibration_data = [
-            (100, 5260),  # Was 5666 and just adjusted for fun
+            (100, 4860),  # Was 5260 and was too long
             (200, 4460),  # Working ?
             (280, 4000),  # Added in upon observation
             (300, 3800),  # Was 4066 and .25 seconds too long
