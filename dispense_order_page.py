@@ -1,5 +1,4 @@
-
-# dispense_page.py
+# dispense_order_page.py
 import tkinter as tk
 from tkinter import ttk, messagebox
 
@@ -204,7 +203,6 @@ class DispenseOrderPage(tk.Frame):
                     f.write(f"{hw}: {qty}\n")
 
             self.update_keycard_file()
-            # DISPENSE_LOADING_SCREEN()
             self.shopping_list.clear()
             self.hardware_names.clear()
             self.controller.show_frame("DispensingPage")
@@ -233,4 +231,5 @@ class DispenseOrderPage(tk.Frame):
         self.set_user_info(
             self.controller.current_user_id, self.controller.current_user_credits
         )
+        self.controller.previous_page="DispenseOrderPage"
         super().tkraise(aboveThis)

@@ -22,7 +22,7 @@ class HardwareStockPage(tk.Frame):
             font=("Arial", 16),
             width=8,
             height=2,
-            command=lambda: controller.show_frame("HomePage"),
+            command=lambda: controller.show_frame(self.controller.previous_page),
         )
         back_button.place(x=10, y=10)
 
