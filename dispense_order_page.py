@@ -227,9 +227,10 @@ class DispenseOrderPage(tk.Frame):
         
         part = part.replace(":", " ")
         if part in self.shopping_list:
-            if (self.shopping_list[part] + qty) > 10:
+            max_qty = 50
+            if (self.shopping_list[part] + qty) > max_qty:
                 messagebox.showerror(
-                    "Too Many Parts", "The max order of a part type is 10."
+                    "Too Many Parts", f"The max order of a part type is {max_qty}."
                 )
                 return
             self.shopping_list[part] += qty
