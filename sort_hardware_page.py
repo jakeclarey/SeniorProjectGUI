@@ -351,14 +351,15 @@ class SortHardwarePage(tk.Frame):
         return inventory
 
     def get_steps_from_x2(self, x2):
-        calibration_data = [ 
-            (100, 5666), # Was 5666 and x seconds too y
-            (200, 4466),
-            (300, 4006), # Was 4666 and .25 seconds too long
-            (400, 2666), # Was 4666 and 3 seconds too long
-            (500, 3200), # Working ?
-            (600, 1900), # Was 2200 and 0.5 seconds too long
-            (640, 1200),
+        calibration_data = [
+            (100, 5266),  # Was 5666 and just adjusted for fun
+            (200, 4466),  # Working ?
+            (300, 4006),  # Was 4666 and .25 seconds too long
+            (400, 2566),  # Was 2666 and part hanging off
+            (420, 2966),  # Added in upon observation
+            (500, 3200),  # Working ?
+            (600, 2000),  # Was 1900 and 0.1 seconds too short
+            (640, 1200),  # Have never seen also will not occur as at 640 it trashes
         ]
 
         for i in range(len(calibration_data) - 1):
