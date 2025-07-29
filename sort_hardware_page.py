@@ -354,7 +354,9 @@ class SortHardwarePage(tk.Frame):
         calibration_data = [
             (100, 5266),  # Was 5666 and just adjusted for fun
             (200, 4466),  # Working ?
-            (300, 4006),  # Was 4666 and .25 seconds too long
+            (280, 4006),  # Added in upon observation
+            (300, 3806),  # Was 4066 and .25 seconds too long
+            (340, 3506),  # Added in upon observation
             (400, 2566),  # Was 2666 and part hanging off
             (420, 2966),  # Added in upon observation
             (500, 3200),  # Working ?
