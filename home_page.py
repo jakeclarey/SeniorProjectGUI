@@ -85,7 +85,6 @@ class HomePage(tk.Frame):
     def run_scan(self):
         """Call the scan function and update UI when done."""
         result = keycard.scan()  # This will block, so it's in a thread
-        result = 3344
         if result:
             # Navigate to ActivityPage
             self.controller.current_user_id = result

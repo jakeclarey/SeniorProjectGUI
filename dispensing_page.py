@@ -1,4 +1,4 @@
-# dispense_loading_page.py
+# dispense_page.py
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
@@ -11,6 +11,7 @@ class DispensingPage(tk.Frame):
         super().__init__(parent, width=1024, height=600, bg="#0032A0")
         self.controller = controller
         self.ser = self.controller.get_serial_port()
+        
         # White box with thick black border
         box_frame = tk.Frame(
             self, bg="white", highlightbackground="black", highlightthickness=25
@@ -43,11 +44,6 @@ class DispensingPage(tk.Frame):
         self.credits_label.config(text=f"Credits: {credits}")
 
     def tkraise(self, aboveThis=None):
-        self.session_credits = 0
-        # Below lines are causing an error, and aren't really necessary on this frame.
-        # self.set_user_info(
-        #     self.controller.current_user_id, self.controller.current_user_credits
-        # )
         super().tkraise(aboveThis)
         self.dispensing_thread = threading.Thread(
             target=self.run_dispensing_process, daemon=True
