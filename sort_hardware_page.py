@@ -345,7 +345,6 @@ class SortHardwarePage(tk.Frame):
                             name = parts[1].strip()
                             quantity = int(parts[2].strip())
                             inventory[f"{category}:{name}"] = quantity
-            print(f"Loading inventory in sorting page: {inventory}")
         except FileNotFoundError:
             inventory = {"No Data": 0}
         return inventory
