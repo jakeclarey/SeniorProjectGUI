@@ -227,8 +227,7 @@ class SortHardwarePage(tk.Frame):
 
                     # [WARNING] THIS DOES NOT WORK DUE TO THE CAMERA NOT BEING PARALLEL TO THE CONVEYOR
                     # steps_per_inch_belt_travel = 3200 / 0.96 (determined by datasheets and CAD models)
-                    # 
-
+                    #
 
                     # Frame is 640 pixels and there are 6.33 inches of conveyor in frame
                     # ~3200 steps are required to fully push a part off the full conveyor (7.83 inches start to end)
@@ -246,12 +245,12 @@ class SortHardwarePage(tk.Frame):
                     #     (640 - x2) * steps_per_pixel + 1.5 * pixels_per_inch
                     # )
 
-                    
                     # depth = (-6.2e-6) * (x2 ** 2) + 0.014 * x2  # depth in inches from start of visible belt
                     # distance_to_push = 6.33 - depth             # distance left to reach end of belt
                     # num_steps = int(distance_to_push * 3333.33) # convert inches to motor steps
 
-                    num_steps = 0.01209307 * (x2 ** 2) + 20.08856 * x2 + 5000
+                    # num_steps = 0.01209307 * (x2 ** 2) + 20.08856 * x2 + 5000
+                    num_steps = self.get_steps_from_x2(x2)
 
                     # num_steps = int(640 - (center_x + 0.2 * length_x)) * alpha
 
@@ -350,6 +349,32 @@ class SortHardwarePage(tk.Frame):
         except FileNotFoundError:
             inventory = {"No Data": 0}
         return inventory
+
+    def get_steps_from_x2(self, x2):
+        calibration_data = [
+            (100, 24240),
+            (200, 20630),
+            (300, 17110),
+            (400, 13553),
+            (500, 9980),
+            (600, 6440),
+            (640, 5000),
+        ]
+
+        for i in range(len(calibration_data) - 1):
+            x_low, steps_low = calibration_data[i]
+            x_high, steps_high = calibration_data[i + 1]
+
+            if x_low <= x2 <= x_high:
+                ratio = (x2 - x_low) / (x_high - x_low)
+                interpolated_steps = steps_low + ratio * (steps_high - steps_low)
+                return int(interpolated_steps)
+
+        # If x2 is outside the known range, return the closest known value
+        if x2 < calibration_data[0][0]:
+            return calibration_data[0][1]
+        else:
+            return calibration_data[-1][1]
 
     def increment_stock(self, part, stock_increment):
         print(f"Inventory dict: {self.inventory}")
