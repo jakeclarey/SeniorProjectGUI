@@ -414,6 +414,6 @@ class SortHardwarePage(tk.Frame):
                 self.send_command("motors_off\n")
                 self.update_inventory(self.inventory)
                 self.send_command("sorting_done\n")
-                self.ser.flush()
+                # self.ser.flush()
             except:
                 pass
