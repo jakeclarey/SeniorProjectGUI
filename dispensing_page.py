@@ -50,11 +50,19 @@ class DispensingPage(tk.Frame):
         )
         self.dispensing_thread.start()
 
+    def check_dispensing_finished(self):
+        if self.finished:
+            self.after(3000, lambda: self.controller.show_frame("IdlePage"))
+        else:
+            self.after(500, self.check_dispensing_finished)  # Keep checking every 500ms
+
+
     def run_dispensing_process(self):
         self.start_serial_communication()
         return
 
     def start_serial_communication(self):
+        self.finished = False
         try:
             # Step 2: Send hardware_list.txt content
             with open("hardware_list.txt", "r") as file:

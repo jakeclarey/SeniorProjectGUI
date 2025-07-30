@@ -412,8 +412,11 @@ class SortHardwarePage(tk.Frame):
         if self.ser:
             try:
                 self.send_command("motors_off\n")
+                time.sleep(1)
                 self.update_inventory(self.inventory)
+                time.sleep(1)
                 self.send_command("sorting_done\n")
-                # self.ser.flush()
+                time.sleep(1)
+                self.ser.flush()
             except:
                 pass
