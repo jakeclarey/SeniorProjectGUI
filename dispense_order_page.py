@@ -292,7 +292,7 @@ class DispenseOrderPage(tk.Frame):
         try:
             with open("hardware_list.txt", "w") as file:
                 for part, qty in self.shopping_list.items():
-                    file.write(part + ":" + str(qty) + "\n")
+                    file.write(";" + part + ":" + str(qty) + "\n")
         except Exception as e:
             print(f"Exception occured in update_hardware_list_txt: {e}")
             pass

@@ -352,19 +352,19 @@ class SortHardwarePage(tk.Frame):
 
     def get_steps_from_x2(self, x2):
         calibration_data = [
-            (100, 4560),  # Was 4860 and was too long
-            (200, 4460),  # Working ?
+            (100, 4560),  # Working
+            (200, 4460),  # Working
             (280, 4000),  # Added in upon observation
             (300, 3800),  # Was 4066 and .25 seconds too long
-            (320, 3650),  # Added in upon observation
-            (340, 3500),  # Added in upon observation
-            (380, 3030),  # Added in upon observation
+            (320, 3650),  # Working
+            (340, 3500),  # Working
+            (380, 3030),  # Working
             (400, 2560),  # Was 2666 and part hanging off
-            (420, 2960),  # Added in upon observation
-            (460, 3000),  # Added in upon observation
+            (420, 2960),  # Working
+            (460, 3000),  # Working
             (500, 3200),  # Working ?
             (600, 2000),  # Was 1900 and 0.1 seconds too short
-            (640, 1200),  # Have never seen also will not occur as at 640 it trashes
+            (640, 1200),  # Have never seen, also will not occur as at 640 it trashes
         ]
 
         for i in range(len(calibration_data) - 1):
@@ -414,5 +414,6 @@ class SortHardwarePage(tk.Frame):
                 self.send_command("motors_off\n")
                 self.update_inventory(self.inventory)
                 self.send_command("sorting_done\n")
+                self.ser.flush()
             except:
                 pass

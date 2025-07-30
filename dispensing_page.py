@@ -60,7 +60,7 @@ class DispensingPage(tk.Frame):
             with open("hardware_list.txt", "r") as file:
                 # Read the parts to be dispensed from the hardware list file, removing new lines.
                 data = file.read().strip().replace("\n", "")
-                print("dispense;{student_order}\n".format(student_order=data))
+                print("dispense{student_order}\n".format(student_order=data))
                 # Send dispense; to trigger dispensing state, then send the student's order and terminate with new line.
                 self.ser.write("dispense;{student_order}\n".format(student_order=data).encode())
 
