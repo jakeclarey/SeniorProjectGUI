@@ -59,7 +59,7 @@ class DispenseOrderPage(tk.Frame):
             width=12,
             height=2,
             bg="white",
-            command=lambda: controller.show_frame("ActivityPage"),
+            command=self.on_back_button,
         ).place(x=10, y=10)
         
         # View Available Stock button
@@ -183,6 +183,14 @@ class DispenseOrderPage(tk.Frame):
         self.selected_part = part
         self.selected_button = btn
         btn.config(bg="yellow")
+    
+    def on_back_button(self):
+        self.selected_button.config(bg="#f0f0f0")
+        self.selected_part = None
+        self.selected_button = None
+        self.total_qty = 0
+        self.shopping_list.clear()
+        self.after(0, self.controller.show_frame("ActivityPage"))
         
     def on_submit_order(self):
         if not self.shopping_list:
@@ -192,7 +200,7 @@ class DispenseOrderPage(tk.Frame):
         self.update_keycard_file()
         self.update_hardware_list_txt()
         self.total_qty = 0
-        self.selected_button.config(bg="f0f0f0")
+        self.selected_button.config(bg="#f0f0f0")
         self.selected_part = None
         self.selected_button = None
         self.update_inventory_txt()
