@@ -192,6 +192,7 @@ class DispenseOrderPage(tk.Frame):
         self.update_keycard_file()
         self.update_hardware_list_txt()
         self.total_qty = 0
+        self.selected_button.config(bg="f0f0f0")
         self.selected_part = None
         self.selected_button = None
         self.update_inventory_txt()

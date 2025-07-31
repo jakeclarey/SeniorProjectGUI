@@ -1,0 +1,8 @@
+Screw:M2 x 10:200
+Screw:M3 x 8:200
+Screw:M3 x 16:200
+Screw:M3 x 30:200
+Screw:M3 x 50:200
+Nut:M2:200
+Nut:M3:200
+Locknut:M3:200
